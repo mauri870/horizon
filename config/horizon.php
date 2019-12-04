@@ -98,6 +98,7 @@ return [
         'recent_failed' => 10080,
         'failed' => 10080,
         'monitored' => 10080,
+        'completed' => 120,
     ],
 
     /*

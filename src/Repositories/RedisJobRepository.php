@@ -66,6 +66,7 @@ class RedisJobRepository implements JobRepository
     {
         $this->redis = $redis;
         $this->recentJobExpires = config('horizon.trim.recent', 60);
+        $this->completedJobExpires = config('horizon.trim.completed', 60);
         $this->failedJobExpires = config('horizon.trim.failed', 10080);
         $this->recentFailedJobExpires = config('horizon.trim.recent_failed', $this->failedJobExpires);
         $this->monitoredJobExpires = config('horizon.trim.monitored', 10080);
@@ -405,7 +406,7 @@ class RedisJobRepository implements JobRepository
             ? $pipe->hmset($id, ['status' => 'failed'])
             : $pipe->hmset($id, ['status' => 'completed', 'completed_at' => str_replace(',', '.', microtime(true))]);
 
-        $pipe->expireat($id, Chronos::now()->addMinutes($this->recentJobExpires)->getTimestamp());
+        $pipe->expireat($id, Chronos::now()->addMinutes($this->completedJobExpires)->getTimestamp());
     }
 
     /**
